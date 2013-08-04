@@ -1,0 +1,12 @@
+#!/bin/bash
+echo -n "Filename prefix: "
+read datty
+ditty="./${datty} $(date).txt"
+touch "${ditty}"
+clear
+while true ; do
+	read akaba
+	if test "$akaba" = "EOFEOFEOFEOF" ;  then exit ; fi 
+	test "$akaba" = "PRIPRIPRIPRI" || echo "${akaba}" >> "${ditty}"
+	test "$akaba" = "PRIPRIPRIPRI" && lp -- "${ditty}" && exit
+done

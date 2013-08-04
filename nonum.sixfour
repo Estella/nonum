@@ -1,0 +1,73 @@
+#!/bin/bash
+
+if [ ! $UID = 0 ]; then 
+	echo "This script modifies /etc/rc.local."
+	echo "It must be run as root."
+	exit 1
+fi
+
+echo "This script is designed to use the nearest 6to4 tunnel"
+echo "to turn the computer you are on into an IPv6-via-6to4"
+echo "router. Do you wish to continue [Enter/^C] (like Y/N)"
+read pridcikdloxdopchxnoxduslxonxdhloxneirnxogpdnrxodrpnigdxndn
+echo "You still have the chance, for another 10 seconds, to"
+echo "cancel using ^C."
+sleep 10
+
+echo "Your \'routerbound\' interface please?"
+read route
+
+#Now the realzorz buis starts.
+mv /etc/rc.local /etc/rc.local.$(date +%d-%m-%Y-%H-%M)
+cat << EOF > /etc/rc.local
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+dhclient -v eth0
+
+/sbin/ip tunnel add tun6to4 mode sit ttl 254 remote any local $(wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//')
+/sbin/ip link set dev tun6to4 up
+/sbin/ip -6 addr add $(printf "2002:%02x%02x:%02x%02x::1" `wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//' | tr "." " "`)/16 dev tun6to4
+/sbin/ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
+
+
+ip6tables -F
+
+ip6tables -A INPUT   -i lo       -j ACCEPT
+ip6tables -A OUTPUT  -o lo       -j ACCEPT
+
+ip6tables -A INPUT   -i $route -j ACCEPT
+ip6tables -A FORWARD -i $route -o tun6to4 -j ACCEPT
+ip6tables -A FORWARD -i tun6to4 -o $route -j ACCEPT
+ip6tables -A OUTPUT  -o $route -j ACCEPT
+
+#ip6tables -A INPUT   -i eth1                -j ACCEPT
+#ip6tables -A FORWARD -i eth0     -o tun6to4 -j ACCEPT
+#ip6tables -A FORWARD -i tun6to4   -o eth0   -j ACCEPT
+#ip6tables -A OUTPUT  -o eth1                -j ACCEPT
+
+ip6tables -A INPUT   -i tun6to4           -j ACCEPT
+#ip6tables -A FORWARD -i eth0     -o eth1 -j ACCEPT
+#ip6tables -A FORWARD -i eth1    -o eth0  -j ACCEPT
+ip6tables -A OUTPUT  -o tun6to4           -j ACCEPT
+#/sbin/ip
+
+
+exit 0
+
+EOF
+
+cp /etc/sysctl.conf /etc/sysctl.conf.bak
+sed -e "s/net.ipv6.conf.all.forwarding=0/net.ipv6.conf.all.forwarding=1/" /etc/sysctl.conf > /etc/sysctl.conf
+echo "System reconfigure complete. All you now need to do is"
+echo "install radvd appropriately."

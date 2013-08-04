@@ -1,0 +1,13 @@
+#!/bin/bash
+echo -n "Filename prefix: "
+read datty
+ditty="./${datty} $(date).txt"
+touch "${ditty}"
+clear
+while true ; do
+	read akaba
+	test "$akaba" = "EOFEOFEOFEOF" && exit
+	test "$akaba" = "PRIPRIPRIPRI" || test "$akaba" = "APSAPSAPSAPS" || echo "${akaba}" >> "${ditty}"
+	test "$akaba" = "PRIPRIPRIPRI" && lp -- "${ditty}" && exit
+	test "$akaba" = "APSAPSAPSAPS" && a2ps --columns=1 -R "${ditty}" && EXIT
+done

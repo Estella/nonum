@@ -1,0 +1,9 @@
+#!/bin/bash
+ditty="./$(date).txt"
+touch "${ditty}"
+clear
+while true ; do
+	read akaba
+	if test "$akaba" = "EOFEOFEOFEOF" ;  then exit ; fi 
+	echo "${akaba}" >> "${ditty}"
+done
