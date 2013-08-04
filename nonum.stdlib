@@ -3,6 +3,21 @@ sprunge () {
 }
 echo sprunge loaded
 
+gistify () {
+	cat << EOF | curl https://api.github.com/gists -s -X POST -d @- | grep "html_url"
+{
+	"description":"Gistified command line output",
+	"public":"true",
+	"files": {
+		"gistify.txt": {
+			"content":"$(cat -)"
+		}
+	}
+}
+EOF
+}
+echo gistify loaded
+
 xres-set () {
 	xrandr --output $1 --mode $2
 }
@@ -22,7 +37,10 @@ getip-ext () {
 }
 
 getip () {
-	/sbin/ifconfig | grep -A 1 $1 | tail -n 1 | sed -e 's/ *inet addr://' -e 's/  .*//'
+	/sbin/ifconfig |
+	grep -A 1 $1 |
+	tail -n 1 | 
+	sed -e 's/ *inet addr://' -e 's/  .*//'
 }
 
 get-ip () {
@@ -35,11 +53,12 @@ nonumhelp () {
 	cat << EOF
 Usage:
 sprunge.us pastebin service:	<command to sprunge> | sprunge
+gist by github, paste service:	<command to paste> | gistify
 Set existing X mode to output:	xres-set <output in use> <mode you would like>
 Turn off X output:		xres-off <output to turn off>
 Automated mode generator: 	xc-ml <output> <width> <height> <refresh rate>
 Automated external IP getter:	getip-ext
 Get your insternal IP:		getip <interface name>
-Get both IP's at once:		get-ip <internal interface name>
+Get both IPs at once:		get-ip <internal interface name>
 EOF
 }
