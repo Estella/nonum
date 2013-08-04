@@ -6,8 +6,8 @@ touch "${ditty}"
 clear
 while true ; do
 	read akaba
-	test "$akaba" = "EOFEOFEOFEOF" && exit
-	test "$akaba" = "PRIPRIPRIPRI" || test "$akaba" = "APSAPSAPSAPS" || echo "${akaba}" >> "${ditty}"
-	test "$akaba" = "PRIPRIPRIPRI" && lp -- "${ditty}" && exit
-	test "$akaba" = "APSAPSAPSAPS" && a2ps --columns=1 -R "${ditty}" && EXIT
+	test "$akaba" = "EOFEOFEOFEOF" && exit # check for EOF
+	test "$akaba" = "PRIPRIPRIPRI" || test "$akaba" = "APSAPSAPSAPS" || echo "${akaba}" >> "${ditty}"  #check for print command and/or a2ps command
+	test "$akaba" = "PRIPRIPRIPRI" && lp -- "${ditty}" && exit #print
+	test "$akaba" = "APSAPSAPSAPS" && a2ps --columns=1 -R "${ditty}" && EXIT #a2ps print
 done

@@ -4,6 +4,6 @@ touch "${ditty}"
 clear
 while true ; do
 	read akaba
-	if test "$akaba" = "EOFEOFEOFEOF" ;  then exit ; fi 
-	echo "${akaba}" >> "${ditty}"
+	if test "$akaba" = "EOFEOFEOFEOF" ;  then exit ; fi #test for EOF
+	echo "${akaba}" >> "${ditty}" #echo to file
 done

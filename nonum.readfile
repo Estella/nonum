@@ -1,7 +1,8 @@
 #!/bin/bash
-clear
-echo
-cat "$1"
-echo
-test "$2" = "print" && lp -- "$1"
+#This one is obvious.
+clear #the screen
+echo # a new line
+cat "$1" # the first  argument catenates to the terminal
+echo # a new line
+test "$2" = "print" && lp -- "$1" #print if option 2 is 'print'
 

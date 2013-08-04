@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if [ ! $UID = 0 ]; then 
-	echo "This script modifies /etc/rc.local."
-	echo "It must be run as root."
-	exit 1
-fi
-
-#Pretty self explanatory
+#if [ ! $UID = 0 ]; then 
+#	echo "This script modifies /etc/rc.local."
+#	echo "It must be run as root."
+#	exit 1
+#fi
 
 echo "This script is designed to use the nearest 6to4 tunnel"
 echo "to turn the computer you are on into an IPv6-via-6to4"
@@ -16,16 +14,28 @@ echo "You still have the chance, for another 10 seconds, to"
 echo "cancel using ^C."
 sleep 10
 
-echo "Your 'routerbound' interface please?"
+echo "Your \'routerbound\' interface please?"
 read route
 
-#Now the real business starts.
-mv /etc/rc.local /etc/rc.local.$(date +%d-%m-%Y-%H-%M)
-cat << EOF > /etc/rc.local
+#Now the realzorz buis starts.
+#mv /etc/rc.local /etc/rc.local.$(date +%d-%m-%Y-%H-%M)
+cat << EOF > ./etcrc.local
 #!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
 dhclient -v $route
 
-/sbin/ip tunnel add tun6to4 mode sit ttl 254 remote any local \$(/sbin/ifconfig |grep -A 1 $1 |tail -n 1 |sed -e 's/ *inet addr://' -e 's/  .*//')
+/sbin/ip tunnel add tun6to4 mode sit ttl 254 remote any local \$(wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//')
 /sbin/ip link set dev tun6to4 up
 /sbin/ip -6 addr add \$(printf "2002:%02x%02x:%02x%02x::1" `wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//' | tr "." " "`)/16 dev tun6to4
 /sbin/ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
@@ -57,7 +67,7 @@ exit 0
 
 EOF
 
-cp /etc/sysctl.conf /etc/sysctl.conf.bak
-sed -e "s/net.ipv6.conf.all.forwarding=0/net.ipv6.conf.all.forwarding=1/" /etc/sysctl.conf > /etc/sysctl.conf
+#cp /etc/sysctl.conf /etc/sysctl.conf.bak
+#sed -e "s/net.ipv6.conf.all.forwarding=0/net.ipv6.conf.all.forwarding=1/" /etc/sysctl.conf > /etc/sysctl.conf
 echo "System reconfigure complete. All you now need to do is"
 echo "install radvd appropriately."

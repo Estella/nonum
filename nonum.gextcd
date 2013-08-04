@@ -1,5 +1,5 @@
 #!/bin/bash -x
 
-# This program is the Gopher Extensions Client Daemon.
+# DO NOT USE! HACK HACK HACK!
 /bin/echo -e "//HOSTNAME: $1\n//PORT: $2" >> ./gextcd.lock
 netcat $1 $2 < ./gextcd.lock | netcat -l -p $3 >> ./gextcd.lock
