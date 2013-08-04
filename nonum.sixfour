@@ -33,11 +33,11 @@ cat << EOF > /etc/rc.local
 #
 # By default this script does nothing.
 
-dhclient -v eth0
+dhclient -v $route
 
-/sbin/ip tunnel add tun6to4 mode sit ttl 254 remote any local $(wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//')
+/sbin/ip tunnel add tun6to4 mode sit ttl 254 remote any local \$\(wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'\)
 /sbin/ip link set dev tun6to4 up
-/sbin/ip -6 addr add $(printf "2002:%02x%02x:%02x%02x::1" `wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//' | tr "." " "`)/16 dev tun6to4
+/sbin/ip -6 addr add \$\(printf "2002:%02x%02x:%02x%02x::1" `wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//' | tr "." " "`\)/16 dev tun6to4
 /sbin/ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
 
 
