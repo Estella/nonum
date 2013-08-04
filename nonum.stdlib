@@ -28,22 +28,6 @@ nonumread () {
 }
 echo nonumread loaded
 
-n-typex () {
-	echo -n "Filename prefix: "
-	read datty
-	ditty="./${datty} $(date).txt"
-	touch "${ditty}"
-	clear
-	while true ; do
-		read akaba
-		[[ "$akaba" = "EOFEOFEOFEOF" ]] && exit # check for EOF
-		[[ "$akaba" = "PRIPRIPRIPRI" ]] || test "$akaba" = "APSAPSAPSAPS" || cat >> "${ditty}" <<< "${akaba}"  #check for print command and/or a2ps command
-		[[ "$akaba" = "PRIPRIPRIPRI" ]] && lp -- "${ditty}" && exit #print
-		[[ "$akaba" = "APSAPSAPSAPS" ]] && a2ps --columns=1 -R "${ditty}" && exit #a2ps print
-	done
-}
-echo n-typex loaded
-
 xres-set () {
 	xrandr --output $1 --mode $2
 }
@@ -86,5 +70,12 @@ Automated mode generator: 	xc-ml <output> <width> <height> <refresh rate>
 Automated external IP getter:	getip-ext
 Get your insternal IP:		getip <interface name>
 Get both IPs at once:		get-ip <internal interface name>
+Remark when using this lib:	rem(ark) << eoceoc
+				... comment here ... 
+				eoceoc
 EOF
 }
+echo nonumhelp loaded
+
+remark () { :; }
+rem () { :; }

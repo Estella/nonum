@@ -1,5 +1,3 @@
 #!/bin/bash -x
 
-# DO NOT USE! HACK HACK HACK!
-/bin/echo -e "//HOSTNAME: $1\n//PORT: $2" >> ./gextcd.lock
-netcat $1 $2 < ./gextcd.lock | netcat -l -p $3 >> ./gextcd.lock
+echo This has been deprecated.
