@@ -10,13 +10,39 @@ gistify () {
 	"public":"true",
 	"files": {
 		"gistify.txt": {
-			"content":"$(cat -)"
+			"content":"$(cat < ${1:-/dev/stdin})"
 		}
 	}
 }
 EOF
 }
 echo gistify loaded
+
+nonumread () {
+	#This one is obvious.
+	clear #the screen
+	echo # a new line
+	cat "$1" # the first  argument catenates to the terminal
+	echo # a new line
+	[[ "$2" = "print" ]] && lp -- "$1" #print if option 2 is 'print'
+}
+echo nonumread loaded
+
+n-typex () {
+	echo -n "Filename prefix: "
+	read datty
+	ditty="./${datty} $(date).txt"
+	touch "${ditty}"
+	clear
+	while true ; do
+		read akaba
+		[[ "$akaba" = "EOFEOFEOFEOF" ]] && exit # check for EOF
+		[[ "$akaba" = "PRIPRIPRIPRI" ]] || test "$akaba" = "APSAPSAPSAPS" || cat >> "${ditty}" <<< "${akaba}"  #check for print command and/or a2ps command
+		[[ "$akaba" = "PRIPRIPRIPRI" ]] && lp -- "${ditty}" && exit #print
+		[[ "$akaba" = "APSAPSAPSAPS" ]] && a2ps --columns=1 -R "${ditty}" && exit #a2ps print
+	done
+}
+echo n-typex loaded
 
 xres-set () {
 	xrandr --output $1 --mode $2
@@ -37,10 +63,7 @@ getip-ext () {
 }
 
 getip () {
-	/sbin/ifconfig |
-	grep -A 1 $1 |
-	tail -n 1 | 
-	sed -e 's/ *inet addr://' -e 's/  .*//'
+	/sbin/ifconfig | grep -A 1 $1 | tail -n 1 | sed -e 's/ *inet addr://' -e 's/  .*//'
 }
 
 get-ip () {
@@ -54,6 +77,9 @@ nonumhelp () {
 Usage:
 sprunge.us pastebin service:	<command to sprunge> | sprunge
 gist by github, paste service:	<command to paste> | gistify
+nonum's typex:			n-typex #accepts no arguments
+nonum's nonumread:		nonumread <filename> #append ' print' to print the
+				file
 Set existing X mode to output:	xres-set <output in use> <mode you would like>
 Turn off X output:		xres-off <output to turn off>
 Automated mode generator: 	xc-ml <output> <width> <height> <refresh rate>

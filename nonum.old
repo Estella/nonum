@@ -3,7 +3,7 @@ ditty="./$(date).txt"
 touch "${ditty}"
 clear
 while true ; do
-	read akaba
-	if test "$akaba" = "EOFEOFEOFEOF" ;  then exit ; fi #test for EOF
+	read akaba #read the input
+	if [[ "$akaba" = "EOFEOFEOFEOF" ]] ; then exit ; fi #test for EOF
 	echo "${akaba}" >> "${ditty}" #echo to file
 done
