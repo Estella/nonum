@@ -1,0 +1,11 @@
+#!/bin/bash
+errors="Errors found: "
+printf %b "$errors"
+tr -d "[:punct:][:digit:]" < ${2:-/dev/stdin} | while read spellcheck ; do
+	for word in $spellcheck ; do
+		grep -i "$word" $1 2>&1 > /dev/null || printf %b "$word "
+	done
+done
+if test "$errors" = "Errors found:" ; then
+	printf "\n%b" 'Success! No errors found in document.'
+fi

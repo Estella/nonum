@@ -4,7 +4,7 @@ sprunge () {
 echo sprunge loaded
 
 gistify () {
-	cat << EOF | curl https://api.github.com/gists -s -X POST -d @- | grep "html_url"
+	cat << EOF | curl https://api.github.com/gists -s -X POST -d @-
 {
 	"description":"Gistified command line output",
 	"public":"true",
@@ -55,6 +55,14 @@ get-ip () {
 	echo To the outside world it is: $(getip-ext)
 }
 echo getip, getip-ext and get-ip loaded
+
+n-make () {
+	./configure || exit
+	. ./nmakefile
+	for file in $CODEFILE ; do
+		$COMP $CODEFILE
+	done
+}
 
 nonumhelp () {
 	cat << EOF
