@@ -1,0 +1,3 @@
+#!/bin/bash
+. ~/maily.conf
+printf '%b' 'folders\nx\n' | mailx -N -A $Account

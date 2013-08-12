@@ -1,0 +1,2 @@
+#!/bin/bash
+tmux neww -n "MailX Window" '$PWD/maily'

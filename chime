@@ -1,0 +1,8 @@
+#!/bin/bash
+#if test " $TMUX" = " " ; then#
+	#echo You must be running tmux for this to work'!!1'
+	#exit 55
+#fi
+#[[ "$1 " = " " ]] || tmux -s $1 neww -n "Mail" nonum.mailw
+test -e ~/.mailrc || echo You must create $HOME/.mailrc first.
+./chime-wrapper
